@@ -1,9 +1,6 @@
 package com.example.social_network.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * @author Дмитрий Карпушов 29.07.2023
@@ -11,6 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegistrationUserDto {

@@ -30,6 +30,7 @@ public class UserInteractionDataService {
 
     private final UserMapper userMapper;
 
+
     @Transactional(propagation = Propagation.MANDATORY)
     public User save(RegistrationUserDto registrationUserDto) {
         var user = User.builder()
@@ -48,6 +49,11 @@ public class UserInteractionDataService {
 
     public Optional<UserDto> findByLogin(String login){
         return userRepository.findByLogin(login)
+                .map(userMapper::toDto);
+    }
+
+    public Optional<UserDto> findByEmail(String email){
+        return userRepository.findByLogin(email)
                 .map(userMapper::toDto);
     }
 

@@ -1,11 +1,8 @@
 package com.example.social_network.model.user;
 
-
-import com.example.social_network.model.friend.Friend;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -54,19 +51,4 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "friend_id"))
     private List<User> friends;
 
-
-    public void addFriend(User friend) {
-        if (friends == null) {
-            friends = new ArrayList<>();
-        }
-        friends.add(friend);
-        friend.getFriends().add(this);
-    }
-
-    public void removeFriend(User friend) {
-        if (friends != null) {
-            friends.remove(friend);
-            friend.getFriends().remove(this);
-        }
-    }
 }

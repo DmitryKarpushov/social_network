@@ -21,6 +21,7 @@ public class UserInteractionService {
 
     @Transactional
     public User createNewUser(RegistrationUserDto registrationUserDto) {
+        checkUser(registrationUserDto);
         return userInteractionDataService.save(registrationUserDto);
     }
 
@@ -37,6 +38,15 @@ public class UserInteractionService {
                 .orElseThrow(() -> {
                     throw ApiException.builder().accessDenied("Пользователь не найден по id");
                 });
+    }
+
+    private void checkUser(RegistrationUserDto registrationUserDto) {
+        var existingUserByLogin = userInteractionDataService.findByLogin(registrationUserDto.getLogin());
+        var existingUserByEmail = userInteractionDataService.findByEmail(registrationUserDto.getEmail());
+
+        if (existingUserByLogin.isPresent() || existingUserByEmail.isPresent()) {
+            throw ApiException.builder().conflict("Пользователь с таким login или email уже существует.");
+        }
     }
 
 }

@@ -42,9 +42,9 @@ public class ApiException extends RuntimeException {
                     .build();
         }
 
-        public ApiException badRequest(String message) {
+        public ApiException conflict(String message) {
             return this.message(message)
-                    .status(HttpStatus.BAD_REQUEST)
+                    .status(HttpStatus.CONFLICT)
                     .build();
         }
     }

@@ -26,43 +26,57 @@ public class FriendService {
 
     private final UserService userService;
 
-    private final UserMapper userMapper;
 
     @Transactional
     public void addFriend(String login) {
         var user = userService.getCurrentUser();
-
         var friend = userService.findByLogin(login).orElseThrow(() -> {
             throw ApiException.builder().accessDenied("Пользователь не найден по логину");
         });
 
-        var userToFriend = Friend.builder()
-                .user(user)
-                .friend(friend)
-                .build();
+        checkFriend(friend);
+        var userToFriend = toEntityFriend(user,friend);
         friendDataService.save(userToFriend);
-        var friendToUser = Friend.builder()
-                .user(friend)
-                .friend(user)
-                .build();
+        var friendToUser = toEntityFriend(friend,user);
         friendDataService.save(friendToUser);
     }
 
     public List<UserDto> getFriends() {
         var user = userService.getCurrentUser();
-        return user.getFriends().stream().map(s -> UserDto.builder()
-                .login(s.getLogin())
-                .email(s.getEmail())
-                .build()).collect(Collectors.toList());
+        return user.getFriends().stream().map(this::toUserDto).collect(Collectors.toList());
     }
 
     @Transactional
     public void deleteFriendById(Integer id) {
         var user = userService.getCurrentUser();
-        var ent = User.builder()
+        var friend = User.builder()
                 .id(id)
                 .build();
-        friendDataService.delete(user, ent);
-        friendDataService.delete(ent, user);
+        friendDataService.delete(user, friend);
+        friendDataService.delete(friend, user);
+    }
+
+    private Friend toEntityFriend(User user, User friend){
+        return Friend.builder()
+                .user(user)
+                .friend(friend)
+                .build();
+    }
+
+    private UserDto toUserDto(User user){
+        return UserDto.builder()
+                .login(user.getLogin())
+                .email(user.getEmail())
+                .build();
+    }
+
+    private void checkFriend(User friend){
+        var friends = getFriends();
+        boolean existsFriend = friends.stream()
+                .anyMatch(user -> friend.getLogin().equals(user.getLogin()));
+
+        if (existsFriend) {
+            throw ApiException.builder().accessDenied("Пользователь уже есть в друзьях.");
+        }
     }
 }

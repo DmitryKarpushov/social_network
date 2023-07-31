@@ -1,5 +1,6 @@
 package com.example.social_network.service;
 
+import com.example.social_network.exceptions.ApiException;
 import com.example.social_network.model.dto.RegistrationUserDto;
 import com.example.social_network.model.user.User;
 import com.example.social_network.repository.UserRepository;
@@ -59,7 +60,9 @@ public class UserService implements UserDetailsService {
         if (auth == null) {
             return null;
         }
-        return userRepository.findByLogin(auth.getName()).orElse(null);
+        return userRepository.findByLogin(auth.getName()).orElseThrow(() -> {
+            throw ApiException.builder().accessDenied("Пользователь не найден");
+        });
     }
 }
 
