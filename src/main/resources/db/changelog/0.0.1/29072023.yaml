@@ -1,0 +1,133 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_table_users
+      author: dmitry
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(30)
+              - column:
+                  name: middle_name
+                  type: varchar(30)
+              - column:
+                  name: last_name
+                  type: varchar(30)
+              - column:
+                  name: login
+                  type: varchar(30)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(80)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(50)
+                  constraints:
+                    unique: true
+                    nullable: false
+            primaryKey:
+              - column:
+                name: id
+
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: id
+                  autoIncrement: true
+                  type: int
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+            primaryKey:
+              - column:
+                  name: id
+
+        - createTable:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  autoIncrement: true
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: int
+                  constraints:
+                    nullable: false
+            constraints:
+              - primaryKey:
+                  columnNames: user_id, role_id
+              - addForeignKeyConstraint:
+                  baseTableName: users_roles
+                  baseColumnNames: user_id
+                  referencedTableName: users
+                  referencedColumnNames: id
+                  constraintName: fk_user_id
+              - addForeignKeyConstraint:
+                  baseTableName: users_roles
+                  baseColumnNames: role_id
+                  referencedTableName: roles
+                  referencedColumnNames: id
+                  constraintName: fk_role_id
+
+        - createTable:
+            tableName: friends
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: friend_id
+                  type: int
+                  constraints:
+                    nullable: false
+            constraints:
+              - primaryKey:
+                  columnNames: id
+
+  - changeSet:
+      id: addForeignKeyConstraintsExample
+      author: dmitry
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: friends
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_user_id
+        - addForeignKeyConstraint:
+            baseTableName: friends
+            baseColumnNames: friend_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_friend_id
