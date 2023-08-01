@@ -1,13 +1,11 @@
 package com.example.social_network.service;
 
 import com.example.social_network.exceptions.ApiException;
-import com.example.social_network.mapper.UserMapper;
+import com.example.social_network.mapper.ConvertEntityDto;
 import com.example.social_network.model.dto.UserDto;
-import com.example.social_network.model.friend.Friend;
-import com.example.social_network.model.user.User;
 import com.example.social_network.service.data.FriendDataService;
-import com.example.social_network.service.data.UserInteractionDataService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,57 +24,40 @@ public class FriendService {
 
     private final UserService userService;
 
+    private final ConvertEntityDto convertEntityDto;
 
-    @Transactional
+    private final UserInteractionService userInteractionService;
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void addFriend(String login) {
         var user = userService.getCurrentUser();
         var friend = userService.findByLogin(login).orElseThrow(() -> {
-            throw ApiException.builder().accessDenied("Пользователь не найден по логину");
+            throw ApiException.builder().notFound("Пользователь не найден по логину");
         });
 
-        checkFriend(friend);
-        var userToFriend = toEntityFriend(user,friend);
-        friendDataService.save(userToFriend);
-        var friendToUser = toEntityFriend(friend,user);
-        friendDataService.save(friendToUser);
+        var userToFriend = convertEntityDto.toEntityFriend(user, friend);
+        var friendToUser = convertEntityDto.toEntityFriend(friend, user);
+        try {
+            friendDataService.save(userToFriend);
+            friendDataService.save(friendToUser);
+        } catch (DataIntegrityViolationException e) {
+            throw ApiException.builder().conflict("Данный друг уже добавлен");
+        }
     }
+
 
     public List<UserDto> getFriends() {
         var user = userService.getCurrentUser();
-        return user.getFriends().stream().map(this::toUserDto).collect(Collectors.toList());
+        return user.getFriends().stream().map(convertEntityDto::toUserDto).collect(Collectors.toList());
     }
 
     @Transactional
     public void deleteFriendById(Integer id) {
         var user = userService.getCurrentUser();
-        var friend = User.builder()
-                .id(id)
-                .build();
+        var friend = convertEntityDto.toUser(userInteractionService.findUserById(id));
+
         friendDataService.delete(user, friend);
         friendDataService.delete(friend, user);
     }
 
-    private Friend toEntityFriend(User user, User friend){
-        return Friend.builder()
-                .user(user)
-                .friend(friend)
-                .build();
-    }
-
-    private UserDto toUserDto(User user){
-        return UserDto.builder()
-                .login(user.getLogin())
-                .email(user.getEmail())
-                .build();
-    }
-
-    private void checkFriend(User friend){
-        var friends = getFriends();
-        boolean existsFriend = friends.stream()
-                .anyMatch(user -> friend.getLogin().equals(user.getLogin()));
-
-        if (existsFriend) {
-            throw ApiException.builder().accessDenied("Пользователь уже есть в друзьях.");
-        }
-    }
 }

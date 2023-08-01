@@ -38,9 +38,6 @@ public class UserService implements UserDetailsService {
         return userRepository.findByLogin(login);
     }
 
-    /**
-     * Преобразование пользователя для Spring
-     */
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
@@ -51,7 +48,7 @@ public class UserService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
                 user.getLogin(),
                 user.getPassword(),
-                user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName().toString())).collect(Collectors.toList())
+                user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList())
         );
     }
 
@@ -61,7 +58,7 @@ public class UserService implements UserDetailsService {
             return null;
         }
         return userRepository.findByLogin(auth.getName()).orElseThrow(() -> {
-            throw ApiException.builder().accessDenied("Пользователь не найден");
+            throw ApiException.builder().notFound("Пользователь не найден");
         });
     }
 }

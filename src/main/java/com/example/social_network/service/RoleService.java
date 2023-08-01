@@ -17,7 +17,7 @@ public class RoleService {
 
     public Role getUserRole() {
         return roleDataService.getUserRole().orElseThrow(() -> {
-            throw ApiException.builder().accessDenied("Роль ROLE_USER не найдена");
+            throw ApiException.builder().notFound("Роль ROLE_USER не найдена");
         });
     }
 

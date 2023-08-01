@@ -131,3 +131,29 @@ databaseChangeLog:
             referencedTableName: users
             referencedColumnNames: id
             constraintName: fk_friend_id
+
+  - changeSet:
+      id: addUniqueConstraint
+      author: dmitry
+      changes:
+        - addUniqueConstraint:
+            tableName: friends
+            columnNames: user_id, friend_id
+            constraintName: unique_user_friend_combination
+
+  - changeSet:
+      id: insertRoles
+      author: dmitry
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: name
+                  value: ROLE_USER
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: name
+                  value: ROLE_ADMIN

@@ -28,7 +28,7 @@ public class UserInteractionService {
 
     public UserDto findUserByLogin(String login) {
         return userInteractionDataService.findByLogin(login).orElseThrow(() -> {
-            throw ApiException.builder().accessDenied("Пользователь не найден по логину");
+            throw ApiException.builder().notFound("Пользователь не найден по логину");
         });
     }
 
@@ -36,7 +36,7 @@ public class UserInteractionService {
     public UserDto findUserById(Integer id) {
         return userInteractionDataService.findById(id)
                 .orElseThrow(() -> {
-                    throw ApiException.builder().accessDenied("Пользователь не найден по id");
+                    throw ApiException.builder().notFound("Пользователь не найден по id");
                 });
     }
 

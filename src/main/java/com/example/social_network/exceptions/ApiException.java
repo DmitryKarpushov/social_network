@@ -26,19 +26,9 @@ public class ApiException extends RuntimeException {
             return builder().sourceMessage(e.getMessage());
         }
 
-        public ApiException accessDenied() {
-            return accessDenied("У вас недостаточно прав для выполнения данной операции.");
-        }
-
-        public ApiException methodNotAllowed(String message) {
+        public ApiException notFound(String message) {
             return this.message(message)
-                    .status(HttpStatus.METHOD_NOT_ALLOWED)
-                    .build();
-        }
-
-        public ApiException accessDenied(String message) {
-            return this.message(message)
-                    .status(HttpStatus.FORBIDDEN)
+                    .status(HttpStatus.NOT_FOUND)
                     .build();
         }
 

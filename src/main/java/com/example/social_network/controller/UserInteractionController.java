@@ -1,8 +1,5 @@
 package com.example.social_network.controller;
 
-
-import com.example.social_network.model.dto.UserDto;
-
 import com.example.social_network.service.UserInteractionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
