@@ -27,4 +27,10 @@ public class UserInteractionController {
     public ResponseEntity<?> findUserByLogin(@PathVariable String login) {
         return ResponseEntity.ok(userInteractionService.findUserByLogin(login));
     }
+
+    @GetMapping("email/{email}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public ResponseEntity<?> findUserByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(userInteractionService.findUserByEmail(email));
+    }
 }

@@ -7,7 +7,6 @@ import com.example.social_network.service.data.FriendDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -28,12 +27,10 @@ public class FriendService {
 
     private final UserInteractionService userInteractionService;
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void addFriend(String login) {
+    @Transactional
+    public void addFriendByLogin(String login) {
         var user = userService.getCurrentUser();
-        var friend = userService.findByLogin(login).orElseThrow(() -> {
-            throw ApiException.builder().notFound("Пользователь не найден по логину");
-        });
+        var friend = convertEntityDto.toUser(userInteractionService.findUserByLogin(login));
 
         var userToFriend = convertEntityDto.toEntityFriend(user, friend);
         var friendToUser = convertEntityDto.toEntityFriend(friend, user);
@@ -44,7 +41,6 @@ public class FriendService {
             throw ApiException.builder().conflict("Данный друг уже добавлен");
         }
     }
-
 
     public List<UserDto> getFriends() {
         var user = userService.getCurrentUser();

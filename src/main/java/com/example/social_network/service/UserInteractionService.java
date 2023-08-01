@@ -32,6 +32,11 @@ public class UserInteractionService {
         });
     }
 
+    public UserDto findUserByEmail(String email) {
+        return userInteractionDataService.findByEmail(email).orElseThrow(() -> {
+            throw ApiException.builder().notFound("Пользователь не найден по email");
+        });
+    }
 
     public UserDto findUserById(Integer id) {
         return userInteractionDataService.findById(id)

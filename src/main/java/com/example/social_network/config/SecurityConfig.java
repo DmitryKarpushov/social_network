@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .antMatchers("/").permitAll()
                 .antMatchers("/social-network/api/v1/auth").permitAll()
                 .antMatchers("/social-network/api/v1/registration").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

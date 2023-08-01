@@ -19,8 +19,8 @@ public class FriendController {
 
     @PostMapping("/{login}")
     @ResponseStatus(code = HttpStatus.OK)
-    public ResponseEntity<?> addFriend(@PathVariable String login) {
-        friendService.addFriend(login);
+    public ResponseEntity<?> addFriendByLogin(@PathVariable String login) {
+        friendService.addFriendByLogin(login);
         return ResponseEntity.ok(friendService.getFriends());
     }
 

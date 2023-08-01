@@ -53,7 +53,7 @@ public class UserInteractionDataService {
     }
 
     public Optional<UserDto> findByEmail(String email){
-        return userRepository.findByLogin(email)
+        return userRepository.findByEmail(email)
                 .map(userMapper::toDto);
     }
 
