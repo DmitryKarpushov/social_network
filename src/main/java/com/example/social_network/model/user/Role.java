@@ -1,6 +1,5 @@
 package com.example.social_network.model.user;
 
-import com.example.social_network.utils.Roles;
 import lombok.*;
 
 import javax.persistence.*;

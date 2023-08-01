@@ -1,7 +1,6 @@
 package com.example.social_network.service;
 
 import com.example.social_network.exceptions.ApiException;
-import com.example.social_network.model.dto.RegistrationUserDto;
 import com.example.social_network.model.user.User;
 import com.example.social_network.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,12 +10,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
